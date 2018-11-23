@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+     Copyright 2005-2015 Red Hat, Inc.
+
+     Red Hat licenses this file to you under the Apache License, version
+     2.0 (the "License"); you may not use this file except in compliance
+     with the License.  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+     implied.  See the License for the specific language governing
+     permissions and limitations under the License.
+
+-->
+<!--
+   This is the OSGi Blueprint XML file defining the CXF JAX-RS beans.  Because the file is in the
+   OSGI-INF/blueprint directory inside our JAR, it will be automatically activated as soon as the artifact is installed.
+
+   The root element for any OSGi Blueprint file is 'blueprint' - you also see the namespace definitions for both the Blueprint
+   and the CXF JAX-RS namespaces.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+        xmlns:cxf="http://cxf.apache.org/core"
+        xsi:schemaLocation="
+      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
+      http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
+
+    <!--<httpj:engine-factory id="port-8443-tls-config">-->
+        <!--<httpj:engine port="8443">-->
+            <!--<httpj:tlsServerParameters>-->
+                <!--<sec:keyManagers keyPassword="password">-->
+                    <!--<sec:keyStore type="JKS" password="password"-->
+                            <!--file="/etc/secrets/tls/keystore.jks"/>-->
+                <!--</sec:keyManagers>-->
+            <!--</httpj:tlsServerParameters>-->
+        <!--</httpj:engine>-->
+    <!--</httpj:engine-factory>-->
+
+    <jaxrs:server id="customerService" address="http://0.0.0.0:8080/cxf/rest">
+        <jaxrs:serviceBeans>
+            <ref bean="svc"/>
+        </jaxrs:serviceBeans>
+    </jaxrs:server>
+
+    <!--<jaxrs:server id="customerServiceTls" address="https://0.0.0.0:8443/cxf/rest" depends-on="port-8443-tls-config">-->
+        <!--<jaxrs:serviceBeans>-->
+            <!--<ref bean="svc"/>-->
+        <!--</jaxrs:serviceBeans>-->
+    <!--</jaxrs:server>-->
+
+    <cxf:bus>
+        <cxf:features>
+            <cxf:logging/>
+        </cxf:features>
+    </cxf:bus>
+
+
+    <!--
+	  We are using the OSGi Blueprint XML syntax to define a bean that we referred to in our JAX-RS server setup.
+	  This bean carries a set of JAX-RS annotations that allow its methods to be mapped to incoming requests.
+	-->
+    <bean id="svc" class="org.wildfly.camel.examples.cxf.jaxrs.Service"/>
+
+</beans>
